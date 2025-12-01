@@ -635,8 +635,8 @@ Login Succeeded
 - If we want to push an image to our dockerhub it has to be tagged with our docker username. We can tag an existing image by using `docker tag` command like shown below.
 
 ```sh
-docker tag <image-id> nilipane23/regapp:tagname
-docker push nilipane23/regapp:tagname
+docker tag <image-id> bhushangt231/project:server
+docker push bhushangt231/project:server
 ```
 
 - Now we can update our playbook to add new tasks.
@@ -650,10 +650,10 @@ docker push nilipane23/regapp:tagname
       args:
         chdir: /opt/docker
     - name: create tag to push image onto dockerhub
-      command: docker tag regapp:latest nilipane23/regapp:latest
+      command: docker tag regapp:latest bhushangt231/project:server
 
     - name: push docker image
-      command: docker push nilipane23/regapp:latest
+      command: docker push bhushangt231/project:server
 ```
 
 - We can dry-run our playbook by giving `--check` flag.
@@ -681,7 +681,7 @@ exec command: ansible-playbook /opt/docker/regapp.yml
 
   tasks:
     - name: create container
-      command: docker run -d --name regapp-server -p 8082:8080 nilipane23/regapp:latest 
+      command: docker run -d --name regapp-server -p 8082:8080 bhushangt231/project:server 
 ```
 
 - But we have a problem in this playbook, when we try to run the same playbook again, it will give an error saying `regapp-server container already exists.` To fix this problem, we will add below tasks to our playbook.
@@ -691,7 +691,7 @@ exec command: ansible-playbook /opt/docker/regapp.yml
 - create a new container
 ``` 
 
-- We will make the below updates in our `regapp-deploy.yml` file
+- We will make the below updates in our `regapp-deployment.yml` file
 ```yaml
 ---
 - hosts: dockerhost
@@ -706,11 +706,11 @@ exec command: ansible-playbook /opt/docker/regapp.yml
       ignore_errors: yes
 
     - name: remove the existing image
-      command: docker rmi nilipane23/regapp:latest
+      command: docker rmi bhushangt231/project:server
       ignore_errors: yes
 
     - name: create container
-      command: docker run -d --name regapp-server -p 8082:8080 nilipane23/regapp:latest 
+      command: docker run -d --name regapp-server -p 8082:8080 bhushangt231/project:server 
       ignore_errors: yes
 ```
 
@@ -718,7 +718,7 @@ exec command: ansible-playbook /opt/docker/regapp.yml
 ```sh
 ansible-playbook /opt/docker/regapp.yml;
 sleep 10;
-ansible-playbook /opt/docker/regapp-deploy.yml
+ansible-playbook /opt/docker/regapp-deployment.yml
 ```
 
 ## Kubernetes cluster on AWS using eksctl
